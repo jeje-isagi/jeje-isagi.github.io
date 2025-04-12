@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 14th Monthsary</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: skyblue;
+            overflow: hidden;
+        }
+        #sketch-container {
+            text-align: center;
+        }
+        .message {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: purple;
+            font-family: Arial, sans-serif;
+        }
+        #main-message {
+            bottom: 180px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #romantic-message {
+            bottom: 50px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div id="sketch-container"></div>
+    <div id="main-message" class="message"></div>
+    <div id="romantic-message" class="message"></div>
+
+    <script>
+        let mainHeartSize = 0;
+        let smallHearts = [];
+        let floatingHeartsLeft = [];
+        let floatingHeartsRight = [];
+        let animationPhase = 0;
+        let lastUpdateTime = 0;
+        let angleLeft = 0;
+        let angleRight = 0;
+        
+        function setup() {
+            createCanvas(800, 600).parent('sketch-container');
+            
+            // Initialize small heart positions
+            smallHearts = [
+                { x: -150, y: 100, size: 0.4, visible: false },
+                { x: 150, y: 100, size: 0.4, visible: false },
+                { x: -200, y: 0, size: 0.3, visible: false },
+                { x: 200, y: 0, size: 0.3, visible: false },
+                { x: -150, y: -100, size: 0.4, visible: false },
+                { x: 150, y: -100, size: 0.4, visible: false }
+            ];
+            
+            // Initialize floating hearts
+            for (let i = 0; i < 4; i++) {
+                floatingHeartsLeft.push({
+                    angle: i * PI/2,
+                    size: 0.2,
+                    color: ['red', 'pink', 'lightcoral', 'hotpink'][i % 4]
+                });
+                floatingHeartsRight.push({
+                    angle: i * PI/2,
+                    size: 0.2,
+                    color: ['red', 'pink', 'lightcoral', 'hotpink'][i % 4]
+                });
+            }
+        }
+        
+        function draw() {
+            background('skyblue');
+            
+            // Animation sequence
+            if (millis() - lastUpdateTime > 1200) {
+                if (animationPhase === 0) {
+                    animationPhase = 1;
+                    lastUpdateTime = millis();
+                } else if (animationPhase === 1) {
+                    // Show small hearts one by one
+                    let allVisible = true;
+                    for (let i = 0; i < smallHearts.length; i++) {
+                        if (millis() - lastUpdateTime > i * 300) {
+                            smallHearts[i].visible = true;
+                        } else {
+                            allVisible = false;
+                        }
+                    }
+                    if (allVisible) {
+                        animationPhase = 2;
+                        lastUpdateTime = millis();
+                    }
+                } else if (animationPhase === 2) {
+                    // Show text
+                    document.getElementById('main-message').textContent = "HAPPY 14TH MONTHSARRY BABYY!!";
+                    document.getElementById('romantic-message').innerHTML = `
+                        To my beloved girlfriend,<br>
+                        thank you for staying with me full of love and genuinity<br>
+                        despite the times na d ta kaayo nagakuyog,<br>
+                        you are still adhering to me and so I will stay loyal to you.<br>
+                        I love you always and forever, darling.
+                    `;
+                    animationPhase = 3;
+                }
+            }
+            
+            // Draw main heart (growing animation)
+            if (animationPhase === 0) {
+                mainHeartSize = min(mainHeartSize + 0.02, 1.5);
+            }
+            drawHeart(0, 0, mainHeartSize, 'red', 'pink');
+            
+            // Draw small hearts
+            for (let heart of smallHearts) {
+                if (heart.visible) {
+                    drawHeart(heart.x, heart.y, heart.size, 'red', 'pink');
+                }
+            }
+            
+            // Draw floating hearts (left)
+            angleLeft += 0.05;
+            for (let i = 0; i < floatingHeartsLeft.length; i++) {
+                let heart = floatingHeartsLeft[i];
+                let x = 80 * cos(angleLeft + i * PI/2) - 250;
+                let y = 80 * sin(angleLeft + i * PI/2) + 150;
+                let size = 0.2 + 0.1 * sin(angleLeft * 2 + i);
+                drawHeart(x, y, size, heart.color, heart.color);
+            }
+            
+            // Draw floating hearts (right)
+            angleRight += 0.05;
+            for (let i = 0; i < floatingHeartsRight.length; i++) {
+                let heart = floatingHeartsRight[i];
+                let x = 80 * cos(angleRight + i * PI/2) + 250;
+                let y = 80 * sin(angleRight + i * PI/2) + 150;
+                let size = 0.2 + 0.1 * sin(angleRight * 2 + i);
+                drawHeart(x, y, size, heart.color, heart.color);
+            }
+        }
+        
+        function drawHeart(x, y, size, fillColor, strokeColor) {
+            push();
+            translate(x, y);
+            scale(size);
+            
+            fill(fillColor);
+            stroke(strokeColor);
+            strokeWeight(3/size);
+            
+            beginShape();
+            // Left side of heart
+            vertex(0, 0);
+            bezierVertex(-25, -25, -100, -50, -50, -120);
+            bezierVertex(0, -180, 50, -120, 50, -60);
+            // Right side of heart
+            bezierVertex(50, -30, 25, 0, 0, 0);
+            endShape(CLOSE);
+            
+            pop();
+        }
+    </script>
+</body>
+</html>
