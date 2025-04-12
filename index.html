@@ -68,17 +68,27 @@
     }
 
     function draw() {
-      background('skyblue');
-      translate(width/2, height/2);
-      
-      // Main heart (growing animation)
-      if (animationPhase === 0) {
-        mainHeartSize = min(mainHeartSize + 0.02, 1.5);
-        if (mainHeartSize >= 1.5) {
-          animationPhase = 1;
-          lastUpdateTime = millis();
-        }
-      }
+    function drawHeart(x, y, size, fillColor, strokeColor) {
+  push();
+  translate(x, y);
+  scale(size);
+  fill(fillColor);
+  stroke(strokeColor || fillColor);
+  strokeWeight(2);
+  
+  // Improved heart shape using curves
+  beginShape();
+  // Left curve
+  vertex(0, 0);
+  bezierVertex(-50, -50, -100, -30, -50, -80);
+  // Bottom point
+  bezierVertex(0, -130, 50, -80, 50, -30);
+  // Right curve
+  bezierVertex(50, -10, 20, 0, 0, 0);
+  endShape(CLOSE);
+  
+  pop();
+}
       drawHeart(0, 0, mainHeartSize, 'red', 'pink');
       
       // Small hearts (appear one by one)
