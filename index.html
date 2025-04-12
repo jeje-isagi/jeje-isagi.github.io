@@ -39,6 +39,17 @@
   </style>
 </head>
 <body>
+  <!-- Password protection script -->
+  <script>
+    const password = prompt("Hi love, enter the secret code:");
+    const correctPassword = "6377"; // <-- Change this to your custom password
+
+    if (password !== correctPassword) {
+      document.body.innerHTML = "<h2 style='text-align:center; color:red;'>Access Denied</h2>";
+      throw new Error("Access denied"); // stops further script
+    }
+  </script>
+
   <div id="canvas-container"></div>
   <div id="text-container">
     <div class="main-text">HAPPY 14TH MONTHSARRY BABYY!!</div>
@@ -72,7 +83,7 @@
     function setup() {
       const canvas = createCanvas(windowWidth, windowHeight);
       canvas.parent('canvas-container');
-      
+
       for (let i = 0; i < 12; i++) {
         hearts.floating.push({
           angle: random(TWO_PI),
@@ -89,20 +100,20 @@
     function draw() {
       background('skyblue');
       translate(width/2, height/2);
-      
+
       if (phase === 0) {
         hearts.main.size = lerp(hearts.main.size, hearts.main.targetSize, 0.05);
         drawPerfectHeart(hearts.main.x, hearts.main.y, hearts.main.size, hearts.main.color);
-        
+
         if (hearts.main.size > hearts.main.targetSize * 0.95) {
           phase = 1;
           lastPhaseTime = millis();
         }
       }
-      
+
       if (phase >= 1) {
         drawPerfectHeart(0, 0, hearts.main.targetSize, hearts.main.color);
-        
+
         for (let i = 0; i < hearts.small.length; i++) {
           if (millis() - lastPhaseTime > i * 300) {
             hearts.small[i].show = true;
@@ -116,20 +127,20 @@
             );
           }
         }
-        
+
         if (millis() - lastPhaseTime > hearts.small.length * 300 + 1000) {
           phase = 2;
         }
       }
-      
+
       if (phase >= 2) {
         angle += 0.01;
-        
+
         for (let heart of hearts.floating) {
           const x = heart.radius * cos(angle * heart.speed + heart.angle) + heart.offsetX;
           const y = heart.radius * sin(angle * heart.speed + heart.angle) + heart.offsetY;
           const pulse = 0.05 * sin(angle * 3);
-          
+
           drawPerfectHeart(x, y, heart.size + pulse, heart.color);
         }
       }
@@ -141,17 +152,15 @@
       scale(size);
       fill(color);
       noStroke();
-      drawingContext.shadowBlur = 10;
-      drawingContext.shadowColor = color;
 
       beginShape();
-      vertex(0, -30);
-      bezierVertex(-25, -60, -70, -40, -70, 0);
-      bezierVertex(-70, 40, -35, 70, 0, 90);
-      bezierVertex(35, 70, 70, 40, 70, 0);
-      bezierVertex(70, -40, 25, -60, 0, -30);
+      vertex(0, 0);
+      bezierVertex(-25, -35, -60, -50, 0, -90);
+      bezierVertex(60, -50, 25, -35, 0, 0);
       endShape(CLOSE);
-      
+
+      drawingContext.shadowBlur = 10;
+      drawingContext.shadowColor = color;
       pop();
     }
 
