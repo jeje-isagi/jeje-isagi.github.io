@@ -52,7 +52,6 @@
   </div>
 
   <script>
-    // Perfect heart parameters
     const hearts = {
       main: { x: 0, y: 0, size: 0, targetSize: 1.5, color: '#ff3366' },
       small: [
@@ -74,7 +73,6 @@
       const canvas = createCanvas(windowWidth, windowHeight);
       canvas.parent('canvas-container');
       
-      // Create floating hearts
       for (let i = 0; i < 12; i++) {
         hearts.floating.push({
           angle: random(TWO_PI),
@@ -92,7 +90,6 @@
       background('skyblue');
       translate(width/2, height/2);
       
-      // Phase 0: Grow main heart
       if (phase === 0) {
         hearts.main.size = lerp(hearts.main.size, hearts.main.targetSize, 0.05);
         drawPerfectHeart(hearts.main.x, hearts.main.y, hearts.main.size, hearts.main.color);
@@ -103,7 +100,6 @@
         }
       }
       
-      // Phase 1: Show small hearts
       if (phase >= 1) {
         drawPerfectHeart(0, 0, hearts.main.targetSize, hearts.main.color);
         
@@ -126,7 +122,6 @@
         }
       }
       
-      // Phase 2: Floating hearts
       if (phase >= 2) {
         angle += 0.01;
         
@@ -140,25 +135,23 @@
       }
     }
 
-    // GUARANTEED perfect heart drawing function
     function drawPerfectHeart(x, y, size, color) {
       push();
       translate(x, y);
       scale(size);
       fill(color);
       noStroke();
-      
-      beginShape();
-      // Left curve
-      vertex(0, 0);
-      bezierVertex(-25, -35, -60, -50, 0, -90);
-      // Right curve
-      bezierVertex(60, -50, 25, -35, 0, 0);
-      endShape(CLOSE);
-      
-      // Add slight shadow for depth
       drawingContext.shadowBlur = 10;
       drawingContext.shadowColor = color;
+
+      beginShape();
+      vertex(0, -30);
+      bezierVertex(-25, -60, -70, -40, -70, 0);
+      bezierVertex(-70, 40, -35, 70, 0, 90);
+      bezierVertex(35, 70, 70, 40, 70, 0);
+      bezierVertex(70, -40, 25, -60, 0, -30);
+      endShape(CLOSE);
+      
       pop();
     }
 
