@@ -4,45 +4,66 @@
   <title>Happy 14th Monthsary</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; background: skyblue; }
-    #heart-container { position: absolute; width: 100%; height: 100%; }
-    .message { 
-      position: absolute; 
-      width: 100%; 
-      text-align: center; 
-      color: purple; 
-      font-family: Arial, sans-serif; 
+    body { 
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: skyblue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    #container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    #text-container {
+      position: absolute;
+      bottom: 20%;
+      width: 100%;
+      text-align: center;
+      color: purple;
       z-index: 10;
     }
-    #main-message { bottom: 180px; font-size: 24px; font-weight: bold; }
-    #romantic-message { bottom: 50px; font-size: 14px; line-height: 1.5; }
+    #main-text {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    #sub-text {
+      font-size: 16px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
-  <div id="heart-container"></div>
-  <div id="main-message" class="message">HAPPY 14TH MONTHSARRY BABYY!!</div>
-  <div id="romantic-message" class="message">
-    To my beloved girlfriend,<br>
-    thank you for staying with me full of love and genuinity<br>
-    despite the times na d ta kaayo nagakuyog,<br>
-    you are still adhering to me and so I will stay loyal to you.<br>
-    I love you always and forever, darling.
+  <div id="container"></div>
+  <div id="text-container">
+    <div id="main-text">HAPPY 14TH MONTHSARRY BABYY!!</div>
+    <div id="sub-text">
+      To my beloved girlfriend,<br>
+      thank you for staying with me full of love and genuinity<br>
+      despite the times na d ta kaayo nagakuyog,<br>
+      you are still adhering to me and so I will stay loyal to you.<br>
+      I love you always and forever, darling.
+    </div>
   </div>
 
   <script>
     let mainHeartSize = 0;
     let smallHearts = [];
-    let floatingHeartsLeft = [];
-    let floatingHeartsRight = [];
+    let floatingHearts = [];
     let animationPhase = 0;
     let lastUpdateTime = 0;
-    let angleLeft = 0;
-    let angleRight = 0;
+    let angle = 0;
     
     function setup() {
-      createCanvas(windowWidth, windowHeight).parent('heart-container');
+      createCanvas(windowWidth, windowHeight).parent('container');
       
-      // Small hearts positions
+      // Small heart positions
       smallHearts = [
         { x: -150, y: 100, size: 0.4, visible: false },
         { x: 150, y: 100, size: 0.4, visible: false },
@@ -53,92 +74,85 @@
       ];
       
       // Floating hearts
-      for (let i = 0; i < 4; i++) {
-        floatingHeartsLeft.push({
-          angle: i * PI/2,
-          size: 0.2,
-          color: ['red', 'pink', 'lightcoral', 'hotpink'][i % 4]
-        });
-        floatingHeartsRight.push({
-          angle: i * PI/2,
-          size: 0.2,
-          color: ['red', 'pink', 'lightcoral', 'hotpink'][i % 4]
+      for (let i = 0; i < 8; i++) {
+        floatingHearts.push({
+          angle: i * TWO_PI/8,
+          size: 0.2 + random(0.1),
+          color: ['#ff0000', '#ff69b4', '#ff1493', '#db7093'][i % 4],
+          speed: 0.02 + random(0.01),
+          radius: 80 + random(40),
+          offsetX: (i % 2 === 0) ? -250 : 250
         });
       }
     }
 
     function draw() {
+      clear();
       background('skyblue');
       translate(width/2, height/2);
       
-      // Main heart (growing animation)
+      // Main heart animation
       if (animationPhase === 0) {
-        mainHeartSize = min(mainHeartSize + 0.02, 1.5);
-        if (mainHeartSize >= 1.5) {
+        mainHeartSize = min(mainHeartSize + 0.015, 1.2);
+        drawHeart(0, 0, mainHeartSize, '#ff0000', '#ff69b4');
+        
+        if (mainHeartSize >= 1.2) {
           animationPhase = 1;
           lastUpdateTime = millis();
         }
       }
-      drawHeart(0, 0, mainHeartSize, 'red', 'pink');
-      function drawHeart(x, y, size, fillColor, strokeColor) {
-  push();
-  translate(x, y);
-  scale(size);
-  fill(fillColor);
-  stroke(strokeColor || fillColor);
-  strokeWeight(2);
-  
-  // Improved heart shape using curves
-  beginShape();
-  // Left curve
-  vertex(0, 0);
-  bezierVertex(-50, -50, -100, -30, -50, -80);
-  // Bottom point
-  bezierVertex(0, -130, 50, -80, 50, -30);
-  // Right curve
-  bezierVertex(50, -10, 20, 0, 0, 0);
-  endShape(CLOSE);
-  
-  pop();
+      
+      // Small hearts animation
+      if (animationPhase >= 1) {
+        drawHeart(0, 0, 1.2, '#ff0000', '#ff69b4');
+        
+        for (let i = 0; i < smallHearts.length; i++) {
+          if (millis() - lastUpdateTime > i * 300) {
+            smallHearts[i].visible = true;
+          }
+          if (smallHearts[i].visible) {
+            drawHeart(smallHearts[i].x, smallHearts[i].y, smallHearts[i].size, '#ff0000', '#ff69b4');
+          }
+        }
+        
+        if (millis() - lastUpdateTime > (smallHearts.length * 300) + 1200) {
+          animationPhase = 2;
+        }
       }
       
-      // Floating hearts (left)
-      angleLeft += 0.05;
-      for (let i = 0; i < floatingHeartsLeft.length; i++) {
-        let heart = floatingHeartsLeft[i];
-        let x = 80 * cos(angleLeft + i * PI/2) - 250;
-        let y = 80 * sin(angleLeft + i * PI/2) + 150;
-        let size = 0.2 + 0.1 * sin(angleLeft * 2 + i);
-        drawHeart(x, y, size, heart.color, heart.color);
-      }
-      
-      // Floating hearts (right)
-      angleRight += 0.05;
-      for (let i = 0; i < floatingHeartsRight.length; i++) {
-        let heart = floatingHeartsRight[i];
-        let x = 80 * cos(angleRight + i * PI/2) + 250;
-        let y = 80 * sin(angleRight + i * PI/2) + 150;
-        let size = 0.2 + 0.1 * sin(angleRight * 2 + i);
-        drawHeart(x, y, size, heart.color, heart.color);
+      // Floating hearts animation
+      if (animationPhase >= 2) {
+        angle += 0.005;
+        
+        for (let heart of floatingHearts) {
+          let x = heart.radius * cos(angle * heart.speed + heart.angle) + heart.offsetX;
+          let y = heart.radius * sin(angle * heart.speed + heart.angle) + random(-20, 20);
+          let pulse = 0.1 * sin(angle * 2);
+          
+          drawHeart(x, y, heart.size + pulse, heart.color, heart.color);
+        }
       }
     }
     
+    // Perfect heart drawing function
     function drawHeart(x, y, size, fillColor, strokeColor) {
       push();
       translate(x, y);
       scale(size);
+      noStroke();
       fill(fillColor);
-      stroke(strokeColor);
-      strokeWeight(3/size);
+      
       beginShape();
+      // Left curve
       vertex(0, 0);
-      bezierVertex(-25, -25, -100, -50, -50, -120);
-      bezierVertex(0, -180, 50, -120, 50, -60);
-      bezierVertex(50, -30, 25, 0, 0, 0);
+      bezierVertex(-50, -50, -90, -80, 0, -150);
+      // Right curve
+      bezierVertex(90, -80, 50, -50, 0, 0);
       endShape(CLOSE);
+      
       pop();
     }
-    
+
     function windowResized() {
       resizeCanvas(windowWidth, windowHeight);
     }
