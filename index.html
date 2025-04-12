@@ -80,21 +80,26 @@
         }
       }
       drawHeart(0, 0, mainHeartSize, 'red', 'pink');
-      
-      // Small hearts (appear one by one)
-      if (animationPhase >= 1) {
-        for (let i = 0; i < smallHearts.length; i++) {
-          if (millis() - lastUpdateTime > i * 300) {
-            smallHearts[i].visible = true;
-          }
-          if (smallHearts[i].visible) {
-            drawHeart(smallHearts[i].x, smallHearts[i].y, smallHearts[i].size, 'red', 'pink');
-          }
-        }
-        
-        if (millis() - lastUpdateTime > smallHearts.length * 300 + 1200) {
-          animationPhase = 2;
-        }
+      function drawHeart(x, y, size, fillColor, strokeColor) {
+  push();
+  translate(x, y);
+  scale(size);
+  fill(fillColor);
+  stroke(strokeColor || fillColor);
+  strokeWeight(2);
+  
+  // Improved heart shape using curves
+  beginShape();
+  // Left curve
+  vertex(0, 0);
+  bezierVertex(-50, -50, -100, -30, -50, -80);
+  // Bottom point
+  bezierVertex(0, -130, 50, -80, 50, -30);
+  // Right curve
+  bezierVertex(50, -10, 20, 0, 0, 0);
+  endShape(CLOSE);
+  
+  pop();
       }
       
       // Floating hearts (left)
