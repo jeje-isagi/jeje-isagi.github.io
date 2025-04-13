@@ -40,18 +40,21 @@
 </head>
 <body>
   <script>
-    // PASSWORD PROMPT
-    const correctPassword = "6377";
+    const correctPassword = "iloveyou";
+    let input = "";
 
-    const input = prompt("Enter the secret password:");
-
-    if (input !== correctPassword) {
-      alert("Incorrect password. Access denied.");
-      document.body.innerHTML = ""; // Clear everything
-      throw new Error("Blocked");
+    while (input !== correctPassword) {
+      input = prompt("Enter the secret password:");
+      if (input === null) {
+        alert("You cancelled. Goodbye.");
+        throw new Error("User exited.");
+      }
+      if (input !== correctPassword) {
+        alert("Incorrect password. Try again.");
+      }
     }
-    
-        // If correct, show the content
+
+    // Show the page after correct password
     document.body.style.display = "flex";
     
 </script>
