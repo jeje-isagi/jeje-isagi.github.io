@@ -41,7 +41,7 @@
 <body>
   <script>
     // PASSWORD PROMPT
-    const correctPassword = "iloveyou";
+    const correctPassword = "6377";
 
     const input = prompt("Enter the secret password:");
 
@@ -50,6 +50,8 @@
       document.body.innerHTML = ""; // Clear everything
       throw new Error("Blocked");
     }
+        // If correct, show the content
+    document.body.style.display = "flex";
 </script>
   <div id="canvas-container"></div>
   <div id="text-container">
