@@ -40,10 +40,16 @@
 </head>
 <body>
   <script>
-  const password = prompt("Enter the secret code:");
-  if (password !== "6377") {
-    document.body.innerHTML = "Access denied.";
-  }
+    // PASSWORD PROMPT
+    const correctPassword = "iloveyou";
+
+    const input = prompt("Enter the secret password:");
+
+    if (input !== correctPassword) {
+      alert("Incorrect password. Access denied.");
+      document.body.innerHTML = ""; // Clear everything
+      throw new Error("Blocked");
+    }
 </script>
   <div id="canvas-container"></div>
   <div id="text-container">
